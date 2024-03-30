@@ -2,7 +2,7 @@
 """This module contains code for the v1 api"""
 from flask import Flask
 from models import storage
-from api.v1.views import ap_views
+from api.v1.views import app_views
 import os
 
 
@@ -12,10 +12,13 @@ app.register_blueprint(app_views)
 
 
 @app.teardown_appcontext
-def destroy_db():
+def destroy_db(obj):
     """Handles clean up on db termination"""
     storage.close()
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, threaded=True)
+    host = os.getenv('HBNB_API_HOST', default='0.0.0.0')
+    port = os.getenv('HBNB_API_PORT', default=5000)
+
+    app.run(host, int(port), threaded=True)
